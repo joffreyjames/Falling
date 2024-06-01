@@ -8,11 +8,11 @@ pg.init()
 
 
 WIDTH, HEIGHT = 1024, 800 # screen size
-screen = pg.display.set_mode((WIDTH, HEIGHT))
-pg.display.set_caption("Sand Simulator") # title
-WHITE = (255, 255, 255)
-SAND = (194, 178, 128)
-T = 8
+screen = pg.display.set_mode((WIDTH, HEIGHT)) # initializes screen with specified dimensions
+pg.display.set_caption("Sand Simulator") # sets window title
+WHITE = (255, 255, 255) # sets white color
+SAND = (194, 178, 128) # sets sand color
+T = 8 # sets size of particles
 
 class Grid: # defines "Grid" class
     def __init__(self): # defines constructor method for "Grid" class
@@ -72,20 +72,27 @@ class Grid: # defines "Grid" class
                     self.position.append(points)
 
                 
-    def draw(self, screen):
-        for points in self.position:
-            pg.draw.rect(screen, SAND, (points[0], points[1], T, T), 0)
-
+    def draw(self, screen): # defines draw function: self (refers to the instnace of Grid class) and screen (the pygame screen)
+        for points in self.position: # iterates over each point in self.position as a list that contains the coordiantes of all sand particles present in grid
+            pg.draw.rect(screen, SAND, (points[0], points[1], T, T), 0) # pygame function that draws rectangle on screen
+            # screen is surface that rectangle is drawn on
+            # SAND is color of rectangle defined earlier
+            # (points[0], points[1], T, T) specifies position and size of rectangle
+                # points[0] is x-coordinate of top left corner of rectangle
+                # points [1] is y-coordinate of top left corner of rectangle
+                # T is width of rectangle
+                # T is also height of rectangle
+            # 0 specifies that the rectablge should be filled in
 
 def main():
-    running = True
-    clock = pg.time.Clock()
+    running = True # boolian variable that controls main game loop
+    clock = pg.time.Clock() # Pygame object to manage frame rate
     
-    sandbox = Grid()
+    sandbox = Grid() # sets instance of Grid class
     
-    while running:
+    while running: # while loop to run game
         clock.tick(60) # limit fps to 60
-        pg.display.set_caption("Falling Sand - FPS: {}".format(int(clock.get_fps()))) # display caption
+        pg.display.set_caption("Falling Sand - FPS: {}".format(int(clock.get_fps()))) # display caption including current fps
         screen.fill("black") # fill screen with color
 
         # poll for events
@@ -94,18 +101,17 @@ def main():
             if event.type == pg.QUIT:
                 running = False
                 
-            elif pg.mouse.get_pressed()[0]:
-                pos=pg.mouse.get_pos()
-                button=pg.mouse
-                sandbox.addSand(pos[0]-pos[0]%T, pos[1]-pos[1]%T)
+            elif pg.mouse.get_pressed()[0]: # if left mouse button is pressed
+                pos=pg.mouse.get_pos() # mouse position obtained
+                sandbox.addSand(pos[0]-pos[0]%T, pos[1]-pos[1]%T) # adds sand at mouse position on grid, adjusted to alight with grid cell size T
                 
         
         # Render here
-        sandbox.update_position()
-        sandbox.draw(screen)
+        sandbox.update_position() # updates positions of all sand particles on grid
+        sandbox.draw(screen) # draws the updated positions of sand particles on screed
         
-        pg.display.update()
+        pg.display.update() # updates the display with new frame, rending drawn particles
         
-    pg.quit()
+    pg.quit() 
 
 main()
